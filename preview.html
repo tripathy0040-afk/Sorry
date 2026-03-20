@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chat with Auro</title>
+
+<style>
+body {
+    margin: 0;
+    background: #ece5dd;
+    font-family: 'Segoe UI', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Chat container */
+.chat {
+    width: 350px;
+    height: 600px;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* Header */
+.header {
+    background: #075e54;
+    color: white;
+    padding: 15px;
+    font-weight: bold;
+}
+
+/* Messages */
+.messages {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Chat bubbles */
+.msg {
+    max-width: 70%;
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 10px;
+    font-size: 15px;
+}
+
+/* Your messages (LEFT - grey) */
+.sent {
+    background: #f1f0f0;
+    align-self: flex-start;
+}
+
+/* Auro's message (RIGHT - green) */
+.received {
+    background: #dcf8c6;
+    align-self: flex-end;
+}
+
+/* Image container */
+.img-msg {
+    align-self: center;
+    text-align: center;
+}
+
+/* SVG illustration */
+svg {
+    width: 120px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+/* Instruction */
+.instruction {
+    font-size: 13px;
+    color: #777;
+    margin-top: 5px;
+}
+
+/* Shake animation */
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    50% { transform: translateX(4px); }
+    75% { transform: translateX(-4px); }
+    100% { transform: translateX(0); }
+}
+
+.shake {
+    animation: shake 0.3s;
+}
+
+/* Heart pulse */
+.heart {
+    position: absolute;
+    font-size: 22px;
+    color: #ff4d4d;
+    animation: pulse 0.8s ease-out forwards;
+}
+
+@keyframes pulse {
+    0%   { transform: scale(0.5); opacity: 0.8; }
+    50%  { transform: scale(1.5); opacity: 1; }
+    100% { transform: scale(1); opacity: 0; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="chat">
+    <div class="header">Auro</div>
+
+    <div class="messages" id="messages">
+
+        <div class="img-msg">
+            <!-- Minimal SVG illustration -->
+            <svg id="img" viewBox="0 0 100 100">
+                <circle cx="50" cy="40" r="20" fill="#dfe6e9"/>
+                <rect x="30" y="60" width="40" height="20" rx="10" fill="#dfe6e9"/>
+                <circle cx="42" cy="38" r="2" fill="#636e72"/>
+                <circle cx="58" cy="38" r="2" fill="#636e72"/>
+                <path d="M42 48 Q50 52 58 48" stroke="#636e72" stroke-width="2" fill="none"/>
+            </svg>
+
+            <div class="instruction">Double tap the image</div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+let lastTap = 0;
+let step = -1;
+let pulseShown = false;
+
+const messages = [
+    "I think there was a misunderstanding.",
+    "I didn’t mean for things to go that way.",
+    "Our friendship matters.",
+    "Sorry about that.",
+    "Hope you are okay 🙂"
+];
+
+const img = document.getElementById("img");
+const chat = document.getElementById("messages");
+
+// Add message
+function addMessage(text, type = "sent") {
+    let div = document.createElement("div");
+    div.className = "msg " + type;
+    div.innerText = text;
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+}
+
+// Heart pulse (only once)
+function showPulse(x, y) {
+    if (pulseShown) return;
+
+    pulseShown = true;
+
+    let heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "❤";
+
+    heart.style.left = x + "px";
+    heart.style.top = y + "px";
+
+    document.body.appendChild(heart);
+
+    setTimeout(() => heart.remove(), 800);
+}
+
+// Double tap
+img.addEventListener("click", (e) => {
+    let currentTime = new Date().getTime();
+    let tapLength = currentTime - lastTap;
+
+    // Shake effect
+    img.classList.add("shake");
+    setTimeout(() => img.classList.remove("shake"), 300);
+
+    if (tapLength < 300 && tapLength > 0) {
+
+        step++;
+
+        if (step === 0) {
+            addMessage("Hi...", "sent");
+
+            // Auro reply after 1 sec
+            setTimeout(() => {
+                addMessage("??", "received");
+            }, 300);
+        }
+        else if (step <= messages.length) {
+            addMessage(messages[step - 1], "sent");
+
+            if (step === messages.length) {
+                showPulse(e.clientX, e.clientY);
+            }
+        }
+    }
+
+    lastTap = currentTime;
+});
+</script>
+
+</body>
+</html>
