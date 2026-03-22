@@ -8,7 +8,7 @@
 <style>
 body {
     margin: 0;
-    background: linear-gradient(to bottom, #ece5dd, #dcdcdc);
+    background: #ece5dd;
     font-family: 'Segoe UI', sans-serif;
     display: flex;
     justify-content: center;
@@ -17,22 +17,21 @@ body {
 }
 
 .chat {
-    width: 360px;
-    height: 640px;
+    width: 350px;
+    height: 600px;
     background: #fff;
     display: flex;
     flex-direction: column;
-    border-radius: 20px;
+    border-radius: 15px;
     overflow: hidden;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
 .header {
     background: #075e54;
     color: white;
-    padding: 16px;
-    font-weight: 600;
-    font-size: 16px;
+    padding: 15px;
+    font-weight: bold;
 }
 
 .messages {
@@ -44,11 +43,11 @@ body {
 }
 
 .msg {
-    max-width: 75%;
-    padding: 10px 12px;
-    margin: 6px 0;
-    border-radius: 12px;
-    font-size: 14px;
+    max-width: 70%;
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 10px;
+    font-size: 15px;
 }
 
 .sent {
@@ -64,25 +63,17 @@ body {
 .img-msg {
     align-self: center;
     text-align: center;
-    margin-top: 10px;
 }
 
 img {
-    width: 280px;
-    border-radius: 16px;
+    width: 120px; /* ✅ unchanged */
     cursor: pointer;
-    transition: transform 0.25s ease;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.2);
-}
-
-img:active {
-    transform: scale(0.95);
 }
 
 .instruction {
-    font-size: 12px;
-    color: #666;
-    margin-top: 8px;
+    font-size: 13px;
+    color: #777;
+    margin-top: 5px;
 }
 
 @keyframes shake {
@@ -99,14 +90,14 @@ img:active {
 
 .heart {
     position: absolute;
-    font-size: 24px;
+    font-size: 20px;
     color: #ff4d4d;
     animation: floatUp 2s linear forwards;
 }
 
 @keyframes floatUp {
     0% { transform: translateY(0); opacity: 1; }
-    100% { transform: translateY(-200px); opacity: 0; }
+    100% { transform: translateY(-150px); opacity: 0; }
 }
 </style>
 </head>
@@ -194,10 +185,10 @@ img.addEventListener("click", (e) => {
     img.classList.add("shake");
     setTimeout(() => img.classList.remove("shake"), 300);
 
-    // ✅ DOUBLE TAP ONLY
+    // ✅ ONLY on double tap
     if (tapLength < 300 && tapLength > 0) {
 
-        // Change image only on double tap
+        // Change image ONLY on double tap
         imageIndex = (imageIndex + 1) % imageList.length;
         img.src = imageList[imageIndex];
 
@@ -221,7 +212,6 @@ img.addEventListener("click", (e) => {
             finalMode = true;
             document.getElementById("instruction").innerText = "Enjoy 😊";
 
-            // ❤️ Start heart flow
             startHeartFlow();
         }
     }
