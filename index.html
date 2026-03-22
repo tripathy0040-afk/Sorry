@@ -24,7 +24,7 @@ body {
     flex-direction: column;
     border-radius: 15px;
     overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
 .header {
@@ -63,17 +63,26 @@ body {
 .img-msg {
     align-self: center;
     text-align: center;
+    margin-top: 10px;
 }
 
 img {
-    width: 120px; /* ✅ unchanged */
+    width: 160px; /* ✅ slightly increased */
+    border-radius: 12px;
     cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+img:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
 
 .instruction {
     font-size: 13px;
     color: #777;
-    margin-top: 5px;
+    margin-top: 6px;
 }
 
 @keyframes shake {
@@ -97,7 +106,7 @@ img {
 
 @keyframes floatUp {
     0% { transform: translateY(0); opacity: 1; }
-    100% { transform: translateY(-150px); opacity: 0; }
+    100% { transform: translateY(-160px); opacity: 0; }
 }
 </style>
 </head>
@@ -155,7 +164,7 @@ function addMessage(text, type = "sent") {
     chat.scrollTop = chat.scrollHeight;
 }
 
-// ❤️ Continuous heart flow
+// ❤️ Continuous hearts
 function startHeartFlow() {
     setInterval(() => {
         let heart = document.createElement("div");
@@ -185,10 +194,9 @@ img.addEventListener("click", (e) => {
     img.classList.add("shake");
     setTimeout(() => img.classList.remove("shake"), 300);
 
-    // ✅ ONLY on double tap
     if (tapLength < 300 && tapLength > 0) {
 
-        // Change image ONLY on double tap
+        // Image change only on double tap
         imageIndex = (imageIndex + 1) % imageList.length;
         img.src = imageList[imageIndex];
 
