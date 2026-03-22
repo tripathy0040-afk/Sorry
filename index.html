@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chat with Aurobinda</title>
+<title>Chat with Himanshu</title>
 
 <style>
 body {
     margin: 0;
-    background: #ece5dd;
+    background: linear-gradient(to bottom, #ece5dd, #dcdcdc);
     font-family: 'Segoe UI', sans-serif;
     display: flex;
     justify-content: center;
@@ -17,21 +17,22 @@ body {
 }
 
 .chat {
-    width: 350px;
-    height: 600px;
+    width: 360px;
+    height: 640px;
     background: #fff;
     display: flex;
     flex-direction: column;
-    border-radius: 15px;
+    border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.25);
 }
 
 .header {
     background: #075e54;
     color: white;
-    padding: 15px;
-    font-weight: bold;
+    padding: 16px;
+    font-weight: 600;
+    font-size: 16px;
 }
 
 .messages {
@@ -43,11 +44,11 @@ body {
 }
 
 .msg {
-    max-width: 70%;
-    padding: 10px;
-    margin: 8px 0;
-    border-radius: 10px;
-    font-size: 15px;
+    max-width: 75%;
+    padding: 10px 12px;
+    margin: 6px 0;
+    border-radius: 12px;
+    font-size: 14px;
 }
 
 .sent {
@@ -63,17 +64,25 @@ body {
 .img-msg {
     align-self: center;
     text-align: center;
+    margin-top: 10px;
 }
 
 img {
-    width: 120px;
+    width: 280px;
+    border-radius: 16px;
     cursor: pointer;
+    transition: transform 0.25s ease;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+}
+
+img:active {
+    transform: scale(0.95);
 }
 
 .instruction {
-    font-size: 13px;
-    color: #777;
-    margin-top: 5px;
+    font-size: 12px;
+    color: #666;
+    margin-top: 8px;
 }
 
 @keyframes shake {
@@ -90,14 +99,14 @@ img {
 
 .heart {
     position: absolute;
-    font-size: 20px;
+    font-size: 24px;
     color: #ff4d4d;
     animation: floatUp 2s linear forwards;
 }
 
 @keyframes floatUp {
     0% { transform: translateY(0); opacity: 1; }
-    100% { transform: translateY(-150px); opacity: 0; }
+    100% { transform: translateY(-200px); opacity: 0; }
 }
 </style>
 </head>
@@ -105,21 +114,18 @@ img {
 <body>
 
 <div class="chat">
-    <div class="header">Aurobinda Tripathy</div>
+    <div class="header">Himanshu</div>
 
     <div class="messages" id="messages">
 
         <div class="img-msg" id="imageContainer">
-            <!-- 👇 Image instead of SVG -->
             <img id="img" src="1.png" />
-
             <div class="instruction" id="instruction">Double tap the image</div>
         </div>
 
     </div>
 </div>
 
-<!-- 🎵 Music -->
 <audio id="bgMusic" src="Pretty%20Woman.mp3" loop></audio>
 
 <script>
@@ -135,7 +141,6 @@ const messages = [
     "Sorry about that."
 ];
 
-// 👇 Image list
 const imageList = [
     "1.png","2.png","3.png","4.png",
     "5.png","6.png","7.png","8.png"
@@ -159,37 +164,28 @@ function addMessage(text, type = "sent") {
     chat.scrollTop = chat.scrollHeight;
 }
 
-// Heart
-function createHeart(x, y) {
-    let heart = document.createElement("div");
-    heart.className = "heart";
-    heart.innerHTML = "❤";
+// ❤️ Continuous heart flow
+function startHeartFlow() {
+    setInterval(() => {
+        let heart = document.createElement("div");
+        heart.className = "heart";
+        heart.innerHTML = "❤";
 
-    heart.style.left = x + "px";
-    heart.style.top = y + "px";
+        heart.style.left = Math.random() * window.innerWidth + "px";
+        heart.style.top = window.innerHeight + "px";
 
-    document.body.appendChild(heart);
+        document.body.appendChild(heart);
 
-    setTimeout(() => heart.remove(), 2000);
+        setTimeout(() => heart.remove(), 2000);
+    }, 300);
 }
 
 // Click logic
 img.addEventListener("click", (e) => {
 
-    // Start music
     if (!musicStarted) {
         music.play();
         musicStarted = true;
-    }
-
-    // Change image on every tap
-    imageIndex = (imageIndex + 1) % imageList.length;
-    img.src = imageList[imageIndex];
-
-    // Final mode → hearts
-    if (finalMode) {
-        createHeart(e.clientX, e.clientY);
-        return;
     }
 
     let currentTime = new Date().getTime();
@@ -198,7 +194,14 @@ img.addEventListener("click", (e) => {
     img.classList.add("shake");
     setTimeout(() => img.classList.remove("shake"), 300);
 
+    // ✅ DOUBLE TAP ONLY
     if (tapLength < 300 && tapLength > 0) {
+
+        // Change image only on double tap
+        imageIndex = (imageIndex + 1) % imageList.length;
+        img.src = imageList[imageIndex];
+
+        if (finalMode) return;
 
         step++;
 
@@ -216,7 +219,10 @@ img.addEventListener("click", (e) => {
             addMessage("Sorry granted 🙂", "received");
 
             finalMode = true;
-            document.getElementById("instruction").innerText = "Tap for hearts";
+            document.getElementById("instruction").innerText = "Enjoy 😊";
+
+            // ❤️ Start heart flow
+            startHeartFlow();
         }
     }
 
