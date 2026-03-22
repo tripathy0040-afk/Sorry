@@ -105,7 +105,7 @@ svg {
 <body>
 
 <div class="chat">
-    <div class="header">Aurobinda Tripathy</div>
+    <div class="header">Aurobinda</div>
 
     <div class="messages" id="messages">
 
@@ -124,10 +124,14 @@ svg {
     </div>
 </div>
 
+<!-- 🎵 Background Music -->
+<audio id="bgMusic" src="Pretty Woman.mp3" loop></audio>
+
 <script>
 let lastTap = 0;
 let step = -1;
 let finalMode = false;
+let musicStarted = false;
 
 const messages = [
     "I think there was a misunderstanding.",
@@ -138,6 +142,10 @@ const messages = [
 
 const img = document.getElementById("img");
 const chat = document.getElementById("messages");
+const music = document.getElementById("bgMusic");
+
+// Set low volume
+music.volume = 0.3;
 
 // Add message
 function addMessage(text, type = "sent") {
@@ -177,7 +185,13 @@ function makeHappyFace() {
 // Click logic
 img.addEventListener("click", (e) => {
 
-    // Final mode → single tap hearts
+    // Start music on first interaction
+    if (!musicStarted) {
+        music.play();
+        musicStarted = true;
+    }
+
+    // Final mode → hearts
     if (finalMode) {
         createHeart(e.clientX, e.clientY);
         return;
@@ -204,7 +218,6 @@ img.addEventListener("click", (e) => {
             addMessage(messages[step - 1], "sent");
         }
         else if (step === messages.length + 1) {
-            // FINAL DOUBLE TAP → show acceptance
             addMessage("Sorry granted 🙂", "received");
 
             makeHappyFace();
