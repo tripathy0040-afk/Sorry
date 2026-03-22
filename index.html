@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chat with Aurobinda</title>
+<title>Chat with Himanshu</title>
 
 <style>
 body {
     margin: 0;
-    background: #ece5dd;
+    background: linear-gradient(to bottom, #ece5dd, #dcdcdc);
     font-family: 'Segoe UI', sans-serif;
     display: flex;
     justify-content: center;
@@ -16,24 +16,28 @@ body {
     height: 100vh;
 }
 
+/* Chat container */
 .chat {
-    width: 350px;
-    height: 600px;
+    width: 360px;
+    height: 640px;
     background: #fff;
     display: flex;
     flex-direction: column;
-    border-radius: 15px;
+    border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.25);
 }
 
+/* Header */
 .header {
     background: #075e54;
     color: white;
-    padding: 15px;
-    font-weight: bold;
+    padding: 16px;
+    font-weight: 600;
+    font-size: 16px;
 }
 
+/* Messages */
 .messages {
     flex: 1;
     padding: 15px;
@@ -42,40 +46,57 @@ body {
     flex-direction: column;
 }
 
+/* Chat bubbles */
 .msg {
-    max-width: 70%;
-    padding: 10px;
-    margin: 8px 0;
-    border-radius: 10px;
-    font-size: 15px;
+    max-width: 75%;
+    padding: 10px 12px;
+    margin: 6px 0;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.4;
 }
 
+/* Your messages (LEFT) */
 .sent {
     background: #f1f0f0;
     align-self: flex-start;
 }
 
+/* Himanshu (RIGHT) */
 .received {
     background: #dcf8c6;
     align-self: flex-end;
 }
 
+/* Image container */
 .img-msg {
     align-self: center;
     text-align: center;
+    margin-top: 10px;
 }
 
+/* Image styling */
 img {
-    width: 120px;
+    width: 280px; /* increased size */
+    border-radius: 16px;
     cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.2);
 }
 
+/* Tap animation */
+img:active {
+    transform: scale(0.95);
+}
+
+/* Instruction */
 .instruction {
-    font-size: 13px;
-    color: #777;
-    margin-top: 5px;
+    font-size: 12px;
+    color: #666;
+    margin-top: 8px;
 }
 
+/* Shake */
 @keyframes shake {
     0% { transform: translateX(0); }
     25% { transform: translateX(-4px); }
@@ -88,16 +109,17 @@ img {
     animation: shake 0.3s;
 }
 
+/* Floating hearts */
 .heart {
     position: absolute;
-    font-size: 20px;
+    font-size: 22px;
     color: #ff4d4d;
     animation: floatUp 2s linear forwards;
 }
 
 @keyframes floatUp {
     0% { transform: translateY(0); opacity: 1; }
-    100% { transform: translateY(-150px); opacity: 0; }
+    100% { transform: translateY(-180px); opacity: 0; }
 }
 </style>
 </head>
@@ -105,21 +127,18 @@ img {
 <body>
 
 <div class="chat">
-    <div class="header">Aurobinda Tripathy</div>
+    <div class="header">Himanshu</div>
 
     <div class="messages" id="messages">
 
         <div class="img-msg" id="imageContainer">
-            <!-- 👇 Image instead of SVG -->
             <img id="img" src="1.png" />
-
             <div class="instruction" id="instruction">Double tap the image</div>
         </div>
 
     </div>
 </div>
 
-<!-- 🎵 Music -->
 <audio id="bgMusic" src="Pretty%20Woman.mp3" loop></audio>
 
 <script>
@@ -135,7 +154,6 @@ const messages = [
     "Sorry about that."
 ];
 
-// 👇 Image list
 const imageList = [
     "1.png","2.png","3.png","4.png",
     "5.png","6.png","7.png","8.png"
@@ -159,7 +177,7 @@ function addMessage(text, type = "sent") {
     chat.scrollTop = chat.scrollHeight;
 }
 
-// Heart
+// Heart animation
 function createHeart(x, y) {
     let heart = document.createElement("div");
     heart.className = "heart";
@@ -182,7 +200,7 @@ img.addEventListener("click", (e) => {
         musicStarted = true;
     }
 
-    // Change image on every tap
+    // Change image
     imageIndex = (imageIndex + 1) % imageList.length;
     img.src = imageList[imageIndex];
 
