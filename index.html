@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chat with Auro</title>
+<title>Chat with Aurobinda</title>
 
 <style>
 body {
@@ -16,7 +16,6 @@ body {
     height: 100vh;
 }
 
-/* Chat container */
 .chat {
     width: 350px;
     height: 600px;
@@ -28,7 +27,6 @@ body {
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
-/* Header */
 .header {
     background: #075e54;
     color: white;
@@ -36,7 +34,6 @@ body {
     font-weight: bold;
 }
 
-/* Messages */
 .messages {
     flex: 1;
     padding: 15px;
@@ -45,7 +42,6 @@ body {
     flex-direction: column;
 }
 
-/* Chat bubbles */
 .msg {
     max-width: 70%;
     padding: 10px;
@@ -54,39 +50,32 @@ body {
     font-size: 15px;
 }
 
-/* Your messages (LEFT - grey) */
 .sent {
     background: #f1f0f0;
     align-self: flex-start;
 }
 
-/* Auro's message (RIGHT - green) */
 .received {
     background: #dcf8c6;
     align-self: flex-end;
 }
 
-/* Image container */
 .img-msg {
     align-self: center;
     text-align: center;
 }
 
-/* SVG illustration */
 svg {
     width: 120px;
     cursor: pointer;
-    transition: transform 0.2s;
 }
 
-/* Instruction */
 .instruction {
     font-size: 13px;
     color: #777;
     margin-top: 5px;
 }
 
-/* Shake animation */
 @keyframes shake {
     0% { transform: translateX(0); }
     25% { transform: translateX(-4px); }
@@ -99,18 +88,16 @@ svg {
     animation: shake 0.3s;
 }
 
-/* Heart pulse */
 .heart {
     position: absolute;
-    font-size: 22px;
+    font-size: 20px;
     color: #ff4d4d;
-    animation: pulse 0.8s ease-out forwards;
+    animation: floatUp 2s linear forwards;
 }
 
-@keyframes pulse {
-    0%   { transform: scale(0.5); opacity: 0.8; }
-    50%  { transform: scale(1.5); opacity: 1; }
-    100% { transform: scale(1); opacity: 0; }
+@keyframes floatUp {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-150px); opacity: 0; }
 }
 </style>
 </head>
@@ -118,12 +105,11 @@ svg {
 <body>
 
 <div class="chat">
-    <div class="header">Auro</div>
+    <div class="header">Aurobinda</div>
 
     <div class="messages" id="messages">
 
-        <div class="img-msg">
-            <!-- Minimal SVG illustration -->
+        <div class="img-msg" id="imageContainer">
             <svg id="img" viewBox="0 0 100 100">
                 <circle cx="50" cy="40" r="20" fill="#dfe6e9"/>
                 <rect x="30" y="60" width="40" height="20" rx="10" fill="#dfe6e9"/>
@@ -132,7 +118,7 @@ svg {
                 <path d="M42 48 Q50 52 58 48" stroke="#636e72" stroke-width="2" fill="none"/>
             </svg>
 
-            <div class="instruction">Double tap the image</div>
+            <div class="instruction" id="instruction">Double tap the image</div>
         </div>
 
     </div>
@@ -141,14 +127,13 @@ svg {
 <script>
 let lastTap = 0;
 let step = -1;
-let pulseShown = false;
+let finalMode = false;
 
 const messages = [
     "I think there was a misunderstanding.",
     "I didn’t mean for things to go that way.",
     "Our friendship matters.",
-    "Sorry about that.",
-    "Hope you are okay 🙂"
+    "Sorry about that."
 ];
 
 const img = document.getElementById("img");
@@ -159,16 +144,13 @@ function addMessage(text, type = "sent") {
     let div = document.createElement("div");
     div.className = "msg " + type;
     div.innerText = text;
-    chat.appendChild(div);
+
+    chat.insertBefore(div, document.getElementById("imageContainer"));
     chat.scrollTop = chat.scrollHeight;
 }
 
-// Heart pulse (only once)
-function showPulse(x, y) {
-    if (pulseShown) return;
-
-    pulseShown = true;
-
+// Heart
+function createHeart(x, y) {
     let heart = document.createElement("div");
     heart.className = "heart";
     heart.innerHTML = "❤";
@@ -178,15 +160,32 @@ function showPulse(x, y) {
 
     document.body.appendChild(heart);
 
-    setTimeout(() => heart.remove(), 800);
+    setTimeout(() => heart.remove(), 2000);
 }
 
-// Double tap
+// Happy face
+function makeHappyFace() {
+    img.innerHTML = `
+        <circle cx="50" cy="40" r="20" fill="#ffeaa7"/>
+        <rect x="30" y="60" width="40" height="20" rx="10" fill="#ffeaa7"/>
+        <circle cx="42" cy="38" r="2" fill="#2d3436"/>
+        <circle cx="58" cy="38" r="2" fill="#2d3436"/>
+        <path d="M40 50 Q50 60 60 50" stroke="#2d3436" stroke-width="2" fill="none"/>
+    `;
+}
+
+// Click logic
 img.addEventListener("click", (e) => {
+
+    // Final mode → single tap hearts
+    if (finalMode) {
+        createHeart(e.clientX, e.clientY);
+        return;
+    }
+
     let currentTime = new Date().getTime();
     let tapLength = currentTime - lastTap;
 
-    // Shake effect
     img.classList.add("shake");
     setTimeout(() => img.classList.remove("shake"), 300);
 
@@ -195,19 +194,22 @@ img.addEventListener("click", (e) => {
         step++;
 
         if (step === 0) {
-            addMessage("Hi...", "sent");
+            addMessage("Hi Pretty...", "sent");
 
-            // Auro reply after 1 sec
             setTimeout(() => {
-                addMessage("??", "received");
-            }, 300);
+                addMessage("?? 😠", "received");
+            }, 1000);
         }
         else if (step <= messages.length) {
             addMessage(messages[step - 1], "sent");
+        }
+        else if (step === messages.length + 1) {
+            // FINAL DOUBLE TAP → show acceptance
+            addMessage("Sorry granted 🙂", "received");
 
-            if (step === messages.length) {
-                showPulse(e.clientX, e.clientY);
-            }
+            makeHappyFace();
+            finalMode = true;
+            document.getElementById("instruction").innerText = "Tap for hearts";
         }
     }
 
