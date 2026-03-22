@@ -65,7 +65,7 @@ body {
     text-align: center;
 }
 
-svg {
+img {
     width: 120px;
     cursor: pointer;
 }
@@ -105,18 +105,13 @@ svg {
 <body>
 
 <div class="chat">
-    <div class="header">Himanshu</div>
+    <div class="header">Aurobinda Tripathy</div>
 
     <div class="messages" id="messages">
 
         <div class="img-msg" id="imageContainer">
-            <svg id="img" viewBox="0 0 100 100">
-                <circle cx="50" cy="40" r="20" fill="#dfe6e9"/>
-                <rect x="30" y="60" width="40" height="20" rx="10" fill="#dfe6e9"/>
-                <circle cx="42" cy="38" r="2" fill="#636e72"/>
-                <circle cx="58" cy="38" r="2" fill="#636e72"/>
-                <path d="M42 48 Q50 52 58 48" stroke="#636e72" stroke-width="2" fill="none"/>
-            </svg>
+            <!-- 👇 Image instead of SVG -->
+            <img id="img" src="1.png" />
 
             <div class="instruction" id="instruction">Double tap the image</div>
         </div>
@@ -124,8 +119,8 @@ svg {
     </div>
 </div>
 
-<!-- 🎵 Background Music -->
-<audio id="bgMusic" src="Pretty Woman.mp3" loop></audio>
+<!-- 🎵 Music -->
+<audio id="bgMusic" src="Pretty%20Woman.mp3" loop></audio>
 
 <script>
 let lastTap = 0;
@@ -140,11 +135,18 @@ const messages = [
     "Sorry about that."
 ];
 
+// 👇 Image list
+const imageList = [
+    "1.png","2.png","3.png","4.png",
+    "5.png","6.png","7.png","8.png"
+];
+
+let imageIndex = 0;
+
 const img = document.getElementById("img");
 const chat = document.getElementById("messages");
 const music = document.getElementById("bgMusic");
 
-// Set low volume
 music.volume = 0.3;
 
 // Add message
@@ -171,25 +173,18 @@ function createHeart(x, y) {
     setTimeout(() => heart.remove(), 2000);
 }
 
-// Happy face
-function makeHappyFace() {
-    img.innerHTML = `
-        <circle cx="50" cy="40" r="20" fill="#ffeaa7"/>
-        <rect x="30" y="60" width="40" height="20" rx="10" fill="#ffeaa7"/>
-        <circle cx="42" cy="38" r="2" fill="#2d3436"/>
-        <circle cx="58" cy="38" r="2" fill="#2d3436"/>
-        <path d="M40 50 Q50 60 60 50" stroke="#2d3436" stroke-width="2" fill="none"/>
-    `;
-}
-
 // Click logic
 img.addEventListener("click", (e) => {
 
-    // Start music on first interaction
+    // Start music
     if (!musicStarted) {
         music.play();
         musicStarted = true;
     }
+
+    // Change image on every tap
+    imageIndex = (imageIndex + 1) % imageList.length;
+    img.src = imageList[imageIndex];
 
     // Final mode → hearts
     if (finalMode) {
@@ -220,7 +215,6 @@ img.addEventListener("click", (e) => {
         else if (step === messages.length + 1) {
             addMessage("Sorry granted 🙂", "received");
 
-            makeHappyFace();
             finalMode = true;
             document.getElementById("instruction").innerText = "Tap for hearts";
         }
