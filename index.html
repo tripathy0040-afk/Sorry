@@ -5,6 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Chat with Himanshu</title>
 
+<!-- ✅ Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NWWMV87WVS"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-NWWMV87WVS');
+</script>
+
 <style>
 body {
     margin: 0;
@@ -67,7 +76,7 @@ body {
 }
 
 img {
-    width: 160px; /* ✅ slightly increased */
+    width: 160px;
     border-radius: 12px;
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -154,7 +163,6 @@ const music = document.getElementById("bgMusic");
 
 music.volume = 0.3;
 
-// Add message
 function addMessage(text, type = "sent") {
     let div = document.createElement("div");
     div.className = "msg " + type;
@@ -164,8 +172,14 @@ function addMessage(text, type = "sent") {
     chat.scrollTop = chat.scrollHeight;
 }
 
-// ❤️ Continuous hearts
+// ❤️ Continuous hearts + tracking
 function startHeartFlow() {
+
+    // Track heart animation
+    gtag('event', 'heart_animation_started', {
+        event_category: 'interaction'
+    });
+
     setInterval(() => {
         let heart = document.createElement("div");
         heart.className = "heart";
@@ -180,7 +194,6 @@ function startHeartFlow() {
     }, 300);
 }
 
-// Click logic
 img.addEventListener("click", (e) => {
 
     if (!musicStarted) {
@@ -196,7 +209,12 @@ img.addEventListener("click", (e) => {
 
     if (tapLength < 300 && tapLength > 0) {
 
-        // Image change only on double tap
+        // Track double tap
+        gtag('event', 'double_tap', {
+            event_category: 'interaction',
+            event_label: 'image_double_tap'
+        });
+
         imageIndex = (imageIndex + 1) % imageList.length;
         img.src = imageList[imageIndex];
 
@@ -216,6 +234,12 @@ img.addEventListener("click", (e) => {
         }
         else if (step === messages.length + 1) {
             addMessage("Sorry granted 🙂", "received");
+
+            // Track final step
+            gtag('event', 'final_step', {
+                event_category: 'interaction',
+                event_label: 'sorry_granted'
+            });
 
             finalMode = true;
             document.getElementById("instruction").innerText = "Enjoy 😊";
