@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Chat with Himanshu</title>
 
-<!-- ✅ Google Analytics (UNCHANGED) -->
+<!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-NWWMV87WVS"></script>
 <script>
 window.dataLayer = window.dataLayer || [];
@@ -57,13 +57,8 @@ body {
     margin: 5px 0;
 }
 
-.left {
-    justify-content: flex-start;
-}
-
-.right {
-    justify-content: flex-end;
-}
+.left { justify-content: flex-start; }
+.right { justify-content: flex-end; }
 
 /* bubbles */
 .msg {
@@ -71,32 +66,24 @@ body {
     padding: 10px 12px;
     border-radius: 12px;
     font-size: 14px;
-    line-height: 1.4;
 }
 
-/* male */
-.sent {
-    background: white;
-}
+.sent { background: white; }
+.received { background: #dcf8c6; }
 
-/* female */
-.received {
-    background: #dcf8c6;
-}
-
-/* image */
+/* IMAGE */
 .img-msg {
     text-align: center;
     margin: 10px 0;
 }
 
 img {
-    width: 150px;
+    width: 170px;
     border-radius: 10px;
     cursor: pointer;
 }
 
-/* choices */
+/* CHOICES ABOVE IMAGE */
 #choices {
     display: none;
     text-align: center;
@@ -126,33 +113,34 @@ img {
 
     <div class="messages" id="messages">
 
-        <div class="img-msg" id="imageContainer">
-            <img id="img" src="1.png">
-            <div>Tap the image</div>
-        </div>
-
+        <!-- ✅ BUTTONS FIRST (ABOVE IMAGE) -->
         <div id="choices">
             <button onclick="choose('forgive')">💛 It's okay</button>
             <button onclick="choose('time')">⏳ Need time</button>
             <button onclick="choose('honest')">💬 Be honest</button>
         </div>
 
+        <!-- IMAGE -->
+        <div class="img-msg" id="imageContainer">
+            <img id="img" src="1.png">
+            <div>Double tap the image</div>
+        </div>
+
     </div>
 </div>
 
-<!-- 🎵 Music (UNCHANGED) -->
 <audio id="bgMusic" src="Music.mp3" loop></audio>
 
 <script>
 let step = 0;
 let mode = "story";
 let musicStarted = false;
+let imgIndex = 1;
 
 const chat = document.getElementById("messages");
 const img = document.getElementById("img");
 const music = document.getElementById("bgMusic");
 
-// 👈 Male (left side - apologizing)
 const messages = [
     "Hi Pretty…",
     "I’ve been thinking about everything.",
@@ -162,7 +150,6 @@ const messages = [
     "I just wanted to say that honestly."
 ];
 
-// message function
 function addMessage(text, side) {
     let row = document.createElement("div");
     row.className = "row " + side;
@@ -172,35 +159,48 @@ function addMessage(text, side) {
     msg.innerText = text;
 
     row.appendChild(msg);
-    chat.insertBefore(row, document.getElementById("imageContainer"));
+    chat.insertBefore(row, document.getElementById("choices"));
 
     chat.scrollTop = chat.scrollHeight;
 }
 
-// 👆 Tap flow
+/* ✅ DOUBLE TAP EVENT */
+let lastTap = 0;
+
 img.addEventListener("click", () => {
+    const now = new Date().getTime();
+    const diff = now - lastTap;
+
+    if (diff < 300) {
+        handleDoubleTap();
+    }
+
+    lastTap = now;
+});
+
+function handleDoubleTap() {
 
     if (!musicStarted) {
         music.play();
         musicStarted = true;
     }
 
+    /* 🔁 CHANGE IMAGE 1 → 8 LOOP */
+    imgIndex++;
+    if (imgIndex > 8) imgIndex = 1;
+    img.src = imgIndex + ".png";
+
     if (mode !== "story") return;
 
     if (step < messages.length) {
         addMessage(messages[step], "left");
 
-        // female response at key moments
         if (step === 2) {
-            setTimeout(() => {
-                addMessage("🙄", "right");
-            }, 800);
+            setTimeout(() => addMessage("🙄", "right"), 800);
         }
 
         if (step === 4) {
-            setTimeout(() => {
-                addMessage("I know you didn’t mean it.", "right");
-            }, 800);
+            setTimeout(() => addMessage("I know you didn’t mean it.", "right"), 800);
         }
     }
 
@@ -214,9 +214,9 @@ img.addEventListener("click", () => {
             event_category: 'interaction'
         });
     }
-});
+}
 
-// 🎮 Female decision
+/* 🎯 CHOICE HANDLING */
 function choose(option) {
 
     document.getElementById("choices").style.display = "none";
