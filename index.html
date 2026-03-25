@@ -73,34 +73,36 @@ body {
     overflow-y: auto;
     display: flex;
     flex-direction: column;
+    gap: 4px;
 }
 
 .msg {
-    max-width: 70%;
-    padding: 10px;
-    margin: 8px;
-    border-radius: 12px;
+    max-width: 75%;
+    padding: 12px 14px;
+    margin: 6px 10px;
+    border-radius: 18px;
     font-size: 14px;
-    opacity: 0;
-    transform: translateY(10px);
-    animation: fadeIn 0.4s forwards;
+    line-height: 1.4;
+    word-wrap: break-word;
+    animation: fadeIn 0.3s ease forwards;
 }
 
 @keyframes fadeIn {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from {opacity: 0; transform: translateY(10px);}
+    to {opacity: 1; transform: translateY(0);}
 }
 
 .sent {
     align-self: flex-start;
-    background: rgba(255,255,255,0.85);
+    background: rgba(255,255,255,0.9);
+    border-bottom-left-radius: 5px;
 }
 
 .received {
     align-self: flex-end;
-    background: #00ff9d;
+    background: linear-gradient(135deg, #00ff9d, #00c6ff);
+    color: black;
+    border-bottom-right-radius: 5px;
 }
 
 .img-msg {
@@ -194,14 +196,14 @@ const music = document.getElementById("bgMusic");
 music.volume = 0.3;
 
 const storyMessages = [
-    "You tapped… 😏",
+    "You tapped… 😊",
     "Trying to fix things?",
-    "Not so easy...",
-    "Do you really mean sorry?",
-    "Hmm… thinking 🤔"
+    "Hmm… not so easy 😏",
+    "Do you really mean it?",
+    "Okay… I'm thinking 🤔"
 ];
 
-// 🎯 Typing effect
+// ✅ FIXED typing (no spacing issue)
 function typingMessage(text, type="sent") {
     let div = document.createElement("div");
     div.className = "msg " + type;
@@ -209,22 +211,36 @@ function typingMessage(text, type="sent") {
     chat.insertBefore(div, document.getElementById("imageContainer"));
 
     let i = 0;
-    let interval = setInterval(() => {
-        div.innerText += text[i];
-        i++;
-        if (i >= text.length) clearInterval(interval);
-    }, 25);
 
+    function typeChar() {
+        if (i < text.length) {
+            div.textContent += text.charAt(i);
+            i++;
+            setTimeout(typeChar, 25);
+        }
+    }
+
+    typeChar();
     chat.scrollTop = chat.scrollHeight;
 }
 
-// 📊 Progress
+// typing indicator
+function showTyping(type="received") {
+    let div = document.createElement("div");
+    div.className = "msg " + type;
+    div.innerText = "Typing...";
+
+    chat.insertBefore(div, document.getElementById("imageContainer"));
+    chat.scrollTop = chat.scrollHeight;
+
+    return div;
+}
+
 function updateProgress() {
     progress += 20;
     progressBar.style.width = progress + "%";
 }
 
-// 👆 Tap event
 img.addEventListener("click", () => {
 
     if (!musicStarted) {
@@ -239,9 +255,12 @@ img.addEventListener("click", () => {
     if (step < storyMessages.length) {
         typingMessage(storyMessages[step], "sent");
 
+        let typing = showTyping("received");
+
         setTimeout(() => {
+            typing.remove();
             typingMessage("...", "received");
-        }, 400);
+        }, 600);
     }
 
     step++;
@@ -250,14 +269,13 @@ img.addEventListener("click", () => {
         document.getElementById("choices").style.display = "block";
         mode = "choice";
 
-        // Track choice screen
         gtag('event', 'choice_shown', {
             event_category: 'interaction'
         });
     }
 });
 
-// 🎮 Choices
+// 🎮 choices
 function choose(option) {
 
     document.getElementById("choices").style.display = "none";
@@ -270,7 +288,7 @@ function choose(option) {
 
     if (option === "forgive") {
         typingMessage("Okay… I forgive you 🙂", "received");
-        typingMessage("Don’t mess up again 😌", "received");
+        typingMessage("Don't mess up again 😌", "received");
         startHearts();
     }
 
@@ -289,7 +307,7 @@ function choose(option) {
     }
 }
 
-// ❤️ Hearts
+// ❤️ hearts
 function startHearts() {
     setInterval(() => {
         let heart = document.createElement("div");
@@ -309,7 +327,7 @@ function startHearts() {
     }, 300);
 }
 
-// 😈 Shake
+// 😈 shake
 function shakeScreen() {
     document.body.animate([
         { transform: "translateX(-10px)" },
