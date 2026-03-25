@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Chat with Himanshu</title>
 
-<!-- Google Analytics (UNCHANGED) -->
+<!-- ✅ Google Analytics (UNCHANGED) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-NWWMV87WVS"></script>
 <script>
 window.dataLayer = window.dataLayer || [];
@@ -54,7 +54,7 @@ body {
 .row {
     display: flex;
     width: 100%;
-    margin: 4px 0;
+    margin: 5px 0;
 }
 
 .left {
@@ -65,24 +65,26 @@ body {
     justify-content: flex-end;
 }
 
+/* bubbles */
 .msg {
     max-width: 70%;
     padding: 10px 12px;
-    border-radius: 10px;
+    border-radius: 12px;
     font-size: 14px;
     line-height: 1.4;
 }
 
-/* female (left) */
-.received {
+/* male */
+.sent {
     background: white;
 }
 
-/* male (right) */
-.sent {
+/* female */
+.received {
     background: #dcf8c6;
 }
 
+/* image */
 .img-msg {
     text-align: center;
     margin: 10px 0;
@@ -138,7 +140,7 @@ img {
     </div>
 </div>
 
-<!-- Music (UNCHANGED) -->
+<!-- 🎵 Music (UNCHANGED) -->
 <audio id="bgMusic" src="Music.mp3" loop></audio>
 
 <script>
@@ -150,32 +152,32 @@ const chat = document.getElementById("messages");
 const img = document.getElementById("img");
 const music = document.getElementById("bgMusic");
 
-// 💙 Male messages (RIGHT side)
+// 👈 Male (left side - apologizing)
 const messages = [
     "Hey… 😊",
-    "I know things felt off between us…",
-    "I’ve been thinking about it a lot.",
-    "I’m really sorry if I hurt you.",
-    "That was never my intention.",
-    "You matter to me… more than I say.",
-    "I just don’t want to lose what we have 💛"
+    "I’ve been thinking about everything.",
+    "I’m really sorry for what happened.",
+    "I never wanted to hurt you.",
+    "You mean a lot to me.",
+    "I just wanted to say that honestly."
 ];
 
-// add message
+// message function
 function addMessage(text, side) {
     let row = document.createElement("div");
     row.className = "row " + side;
 
     let msg = document.createElement("div");
-    msg.className = "msg " + (side === "right" ? "sent" : "received");
+    msg.className = "msg " + (side === "left" ? "sent" : "received");
     msg.innerText = text;
 
     row.appendChild(msg);
     chat.insertBefore(row, document.getElementById("imageContainer"));
+
     chat.scrollTop = chat.scrollHeight;
 }
 
-// tap event
+// 👆 Tap flow
 img.addEventListener("click", () => {
 
     if (!musicStarted) {
@@ -186,11 +188,20 @@ img.addEventListener("click", () => {
     if (mode !== "story") return;
 
     if (step < messages.length) {
-        addMessage(messages[step], "right");
+        addMessage(messages[step], "left");
 
-        setTimeout(() => {
-            addMessage("...", "left");
-        }, 500);
+        // female response at key moments
+        if (step === 2) {
+            setTimeout(() => {
+                addMessage("I read your message…", "right");
+            }, 800);
+        }
+
+        if (step === 4) {
+            setTimeout(() => {
+                addMessage("I know you didn’t mean it.", "right");
+            }, 800);
+        }
     }
 
     step++;
@@ -205,7 +216,7 @@ img.addEventListener("click", () => {
     }
 });
 
-// choices (female responses)
+// 🎮 Female decision
 function choose(option) {
 
     document.getElementById("choices").style.display = "none";
@@ -217,25 +228,20 @@ function choose(option) {
     });
 
     if (option === "forgive") {
-        addMessage("I was a little hurt…", "left");
-        addMessage("But I know you didn’t mean it.", "left");
-        addMessage("And I don’t want to lose this either 💛", "left");
-        addMessage("We’re okay 🙂", "left");
+        addMessage("It’s okay… 🙂", "right");
+        addMessage("Let’s move forward.", "right");
+        addMessage("We’ll be fine 💛", "right");
     }
 
     else if (option === "time") {
-        addMessage("I read everything…", "left");
-        addMessage("I just need a little time to process.", "left");
-        addMessage("It’s not that I don’t care.", "left");
-        addMessage("I just don’t want to rush my feelings.", "left");
+        addMessage("I understand what you’re saying…", "right");
+        addMessage("But I need a little time.", "right");
     }
 
     else if (option === "honest") {
-        addMessage("I’ll be honest… it did hurt.", "left");
-        addMessage("Not because of what happened,", "left");
-        addMessage("but because it came from you.", "left");
-        addMessage("I care about us… that’s why it matters.", "left");
-        addMessage("Let’s take it slow and fix this properly.", "left");
+        addMessage("I was hurt…", "right");
+        addMessage("But I appreciate your honesty.", "right");
+        addMessage("Let’s take things slowly.", "right");
     }
 }
 </script>
