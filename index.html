@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Chat with Himanshu</title>
 
-<!-- ✅ Google Analytics -->
+<!-- ✅ Google Analytics (UNCHANGED) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-NWWMV87WVS"></script>
 <script>
 window.dataLayer = window.dataLayer || [];
@@ -17,35 +17,59 @@ gtag('config', 'G-NWWMV87WVS');
 <style>
 body {
     margin: 0;
-    background: #ece5dd;
-    font-family: 'Segoe UI', sans-serif;
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
+    overflow: hidden;
+
+    background: linear-gradient(-45deg, #ff6a00, #ee0979, #00c6ff, #0072ff);
+    background-size: 400% 400%;
+    animation: gradientBG 10s ease infinite;
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 .chat {
-    width: 350px;
-    height: 600px;
-    background: #fff;
+    width: 360px;
+    height: 620px;
+    backdrop-filter: blur(15px);
+    background: rgba(255,255,255,0.15);
+    border-radius: 20px;
     display: flex;
     flex-direction: column;
-    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
 .header {
-    background: #075e54;
-    color: white;
     padding: 15px;
+    text-align: center;
+    color: white;
     font-weight: bold;
+    background: rgba(0,0,0,0.3);
+}
+
+.progress {
+    height: 5px;
+    background: #ffffff30;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background: #00ff9d;
+    transition: width 0.4s;
 }
 
 .messages {
     flex: 1;
-    padding: 15px;
+    padding: 10px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
@@ -54,69 +78,77 @@ body {
 .msg {
     max-width: 70%;
     padding: 10px;
-    margin: 8px 0;
-    border-radius: 10px;
-    font-size: 15px;
+    margin: 8px;
+    border-radius: 12px;
+    font-size: 14px;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeIn 0.4s forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .sent {
-    background: #f1f0f0;
     align-self: flex-start;
+    background: rgba(255,255,255,0.85);
 }
 
 .received {
-    background: #dcf8c6;
     align-self: flex-end;
+    background: #00ff9d;
 }
 
 .img-msg {
-    align-self: center;
     text-align: center;
     margin-top: 10px;
 }
 
 img {
-    width: 160px;
-    border-radius: 12px;
+    width: 180px;
+    border-radius: 15px;
     cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    transition: transform 0.2s;
 }
 
-img:active {
-    transform: scale(0.95);
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+img:hover {
+    transform: scale(1.05);
 }
 
 .instruction {
-    font-size: 13px;
-    color: #777;
-    margin-top: 6px;
+    font-size: 12px;
+    color: white;
+    margin-top: 5px;
 }
 
-@keyframes shake {
-    0% { transform: translateX(0); }
-    25% { transform: translateX(-4px); }
-    50% { transform: translateX(4px); }
-    75% { transform: translateX(-4px); }
-    100% { transform: translateX(0); }
+#choices {
+    display: none;
+    padding: 10px;
+    text-align: center;
 }
 
-.shake {
-    animation: shake 0.3s;
+#choices button {
+    margin: 5px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.2s;
 }
 
-.heart {
-    position: absolute;
-    font-size: 20px;
-    color: #ff4d4d;
-    animation: floatUp 2s linear forwards;
+#choices button:hover {
+    transform: scale(1.1);
 }
 
-@keyframes floatUp {
-    0% { transform: translateY(0); opacity: 1; }
-    100% { transform: translateY(-160px); opacity: 0; }
-}
+#choices button:nth-child(1) { background: #00ff9d; }
+#choices button:nth-child(2) { background: #ddd; }
+#choices button:nth-child(3) { background: #ff4d4d; color: white; }
+
 </style>
 </head>
 
@@ -125,131 +157,170 @@ img:active {
 <div class="chat">
     <div class="header">Himanshu</div>
 
+    <div class="progress">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
     <div class="messages" id="messages">
 
         <div class="img-msg" id="imageContainer">
             <img id="img" src="1.png" />
-            <div class="instruction" id="instruction">Double tap the image</div>
+            <div class="instruction">Tap the image</div>
+        </div>
+
+        <div id="choices">
+            <button onclick="choose('forgive')">❤️ Forgive</button>
+            <button onclick="choose('ignore')">😑 Ignore</button>
+            <button onclick="choose('roast')">🔥 Roast</button>
         </div>
 
     </div>
 </div>
 
+<!-- 🎵 Music (UNCHANGED) -->
 <audio id="bgMusic" src="Music.mp3" loop></audio>
 
 <script>
-let lastTap = 0;
-let step = -1;
-let finalMode = false;
+let step = 0;
+let progress = 0;
+let mode = "story";
 let musicStarted = false;
 
-const messages = [
-    "I think there was a misunderstanding.",
-    "I didn’t mean for things to go that way.",
-    "Our friendship matters.",
-    "Sorry about that."
-];
-
-const imageList = [
-    "1.png","2.png","3.png","4.png",
-    "5.png","6.png","7.png","8.png"
-];
-
-let imageIndex = 0;
-
-const img = document.getElementById("img");
+const progressBar = document.getElementById("progressBar");
 const chat = document.getElementById("messages");
+const img = document.getElementById("img");
 const music = document.getElementById("bgMusic");
 
 music.volume = 0.3;
 
-function addMessage(text, type = "sent") {
+const storyMessages = [
+    "You tapped… 😏",
+    "Trying to fix things?",
+    "Not so easy...",
+    "Do you really mean sorry?",
+    "Hmm… thinking 🤔"
+];
+
+// 🎯 Typing effect
+function typingMessage(text, type="sent") {
     let div = document.createElement("div");
     div.className = "msg " + type;
-    div.innerText = text;
 
     chat.insertBefore(div, document.getElementById("imageContainer"));
+
+    let i = 0;
+    let interval = setInterval(() => {
+        div.innerText += text[i];
+        i++;
+        if (i >= text.length) clearInterval(interval);
+    }, 25);
+
     chat.scrollTop = chat.scrollHeight;
 }
 
-// ❤️ Continuous hearts + tracking
-function startHeartFlow() {
-
-    // Track heart animation
-    gtag('event', 'heart_animation_started', {
-        event_category: 'interaction'
-    });
-
-    setInterval(() => {
-        let heart = document.createElement("div");
-        heart.className = "heart";
-        heart.innerHTML = "❤";
-
-        heart.style.left = Math.random() * window.innerWidth + "px";
-        heart.style.top = window.innerHeight + "px";
-
-        document.body.appendChild(heart);
-
-        setTimeout(() => heart.remove(), 2000);
-    }, 300);
+// 📊 Progress
+function updateProgress() {
+    progress += 20;
+    progressBar.style.width = progress + "%";
 }
 
-img.addEventListener("click", (e) => {
+// 👆 Tap event
+img.addEventListener("click", () => {
 
     if (!musicStarted) {
         music.play();
         musicStarted = true;
     }
 
-    let currentTime = new Date().getTime();
-    let tapLength = currentTime - lastTap;
+    if (mode !== "story") return;
 
-    img.classList.add("shake");
-    setTimeout(() => img.classList.remove("shake"), 300);
+    updateProgress();
 
-    if (tapLength < 300 && tapLength > 0) {
+    if (step < storyMessages.length) {
+        typingMessage(storyMessages[step], "sent");
 
-        // Track double tap
-        gtag('event', 'double_tap', {
-            event_category: 'interaction',
-            event_label: 'image_double_tap'
-        });
-
-        imageIndex = (imageIndex + 1) % imageList.length;
-        img.src = imageList[imageIndex];
-
-        if (finalMode) return;
-
-        step++;
-
-        if (step === 0) {
-            addMessage("Hi Pretty...", "sent");
-
-            setTimeout(() => {
-                addMessage("?? 😠", "received");
-            }, 1000);
-        }
-        else if (step <= messages.length) {
-            addMessage(messages[step - 1], "sent");
-        }
-        else if (step === messages.length + 1) {
-            addMessage("Sorry granted 🙂", "received");
-
-            // Track final step
-            gtag('event', 'final_step', {
-                event_category: 'interaction',
-                event_label: 'sorry_granted'
-            });
-
-            finalMode = true;
-            document.getElementById("instruction").innerText = "Enjoy 😊";
-
-            startHeartFlow();
-        }
+        setTimeout(() => {
+            typingMessage("...", "received");
+        }, 400);
     }
 
-    lastTap = currentTime;
+    step++;
+
+    if (step === storyMessages.length) {
+        document.getElementById("choices").style.display = "block";
+        mode = "choice";
+
+        // Track choice screen
+        gtag('event', 'choice_shown', {
+            event_category: 'interaction'
+        });
+    }
 });
+
+// 🎮 Choices
+function choose(option) {
+
+    document.getElementById("choices").style.display = "none";
+    mode = "end";
+
+    gtag('event', 'ending_selected', {
+        event_category: 'interaction',
+        event_label: option
+    });
+
+    if (option === "forgive") {
+        typingMessage("Okay… I forgive you 🙂", "received");
+        typingMessage("Don’t mess up again 😌", "received");
+        startHearts();
+    }
+
+    else if (option === "ignore") {
+        typingMessage("Seen ✔✔", "received");
+        setTimeout(() => {
+            typingMessage("No reply.", "received");
+        }, 800);
+    }
+
+    else if (option === "roast") {
+        typingMessage("Wow 😂", "received");
+        typingMessage("You thought sorry is enough?", "received");
+        typingMessage("Try again next life 😈", "received");
+        shakeScreen();
+    }
+}
+
+// ❤️ Hearts
+function startHearts() {
+    setInterval(() => {
+        let heart = document.createElement("div");
+        heart.innerHTML = "❤️";
+        heart.style.position = "absolute";
+        heart.style.left = Math.random() * window.innerWidth + "px";
+        heart.style.top = window.innerHeight + "px";
+
+        document.body.appendChild(heart);
+
+        heart.animate([
+            { transform: "translateY(0)", opacity: 1 },
+            { transform: "translateY(-200px)", opacity: 0 }
+        ], { duration: 2000 });
+
+        setTimeout(() => heart.remove(), 2000);
+    }, 300);
+}
+
+// 😈 Shake
+function shakeScreen() {
+    document.body.animate([
+        { transform: "translateX(-10px)" },
+        { transform: "translateX(10px)" },
+        { transform: "translateX(-10px)" },
+        { transform: "translateX(0)" }
+    ], {
+        duration: 400,
+        iterations: 2
+    });
+}
 </script>
 
 </body>
