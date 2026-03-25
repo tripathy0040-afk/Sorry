@@ -154,11 +154,11 @@ const music = document.getElementById("bgMusic");
 
 // 👈 Male (left side - apologizing)
 const messages = [
-    "Hey… 😊",
+    "Hi Pretty…",
     "I’ve been thinking about everything.",
-    "I’m really sorry for what happened.",
+    "I’m really sorry for what I said.",
     "I never wanted to hurt you.",
-    "You mean a lot to me.",
+    "Our friendship matters lot to me.",
     "I just wanted to say that honestly."
 ];
 
@@ -193,7 +193,7 @@ img.addEventListener("click", () => {
         // female response at key moments
         if (step === 2) {
             setTimeout(() => {
-                addMessage("I read your message…", "right");
+                addMessage("🙄", "right");
             }, 800);
         }
 
@@ -230,7 +230,7 @@ function choose(option) {
     if (option === "forgive") {
         addMessage("It’s okay… 🙂", "right");
         addMessage("Let’s move forward.", "right");
-        addMessage("We’ll be fine 💛", "right");
+        addMessage("I forgive you 💛", "right");
     }
 
     else if (option === "time") {
