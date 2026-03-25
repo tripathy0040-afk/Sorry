@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Chat with Himanshu</title>
 
-<!-- ✅ Google Analytics (UNCHANGED) -->
+<!-- Google Analytics (UNCHANGED) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-NWWMV87WVS"></script>
 <script>
 window.dataLayer = window.dataLayer || [];
@@ -50,7 +50,7 @@ body {
     flex-direction: column;
 }
 
-/* message row */
+/* rows */
 .row {
     display: flex;
     width: 100%;
@@ -73,13 +73,13 @@ body {
     line-height: 1.4;
 }
 
-/* you */
-.sent {
+/* female (left) */
+.received {
     background: white;
 }
 
-/* other person */
-.received {
+/* male (right) */
+.sent {
     background: #dcf8c6;
 }
 
@@ -138,7 +138,7 @@ img {
     </div>
 </div>
 
-<!-- 🎵 Music (UNCHANGED) -->
+<!-- Music (UNCHANGED) -->
 <audio id="bgMusic" src="Music.mp3" loop></audio>
 
 <script>
@@ -150,31 +150,32 @@ const chat = document.getElementById("messages");
 const img = document.getElementById("img");
 const music = document.getElementById("bgMusic");
 
-// 💛 Soft messages
+// 💙 Male messages (RIGHT side)
 const messages = [
     "Hey… 😊",
-    "It's okay… things happen.",
-    "I know you didn’t mean to hurt me.",
-    "What matters is you came back.",
-    "That means a lot 💛"
+    "I know things felt off between us…",
+    "I’ve been thinking about it a lot.",
+    "I’m really sorry if I hurt you.",
+    "That was never my intention.",
+    "You matter to me… more than I say.",
+    "I just don’t want to lose what we have 💛"
 ];
 
-// message function (LEFT / RIGHT)
+// add message
 function addMessage(text, side) {
     let row = document.createElement("div");
     row.className = "row " + side;
 
     let msg = document.createElement("div");
-    msg.className = "msg " + (side === "left" ? "sent" : "received");
+    msg.className = "msg " + (side === "right" ? "sent" : "received");
     msg.innerText = text;
 
     row.appendChild(msg);
     chat.insertBefore(row, document.getElementById("imageContainer"));
-
     chat.scrollTop = chat.scrollHeight;
 }
 
-// tap
+// tap event
 img.addEventListener("click", () => {
 
     if (!musicStarted) {
@@ -185,10 +186,10 @@ img.addEventListener("click", () => {
     if (mode !== "story") return;
 
     if (step < messages.length) {
-        addMessage(messages[step], "left");
+        addMessage(messages[step], "right");
 
         setTimeout(() => {
-            addMessage("...", "right");
+            addMessage("...", "left");
         }, 500);
     }
 
@@ -204,7 +205,7 @@ img.addEventListener("click", () => {
     }
 });
 
-// choices
+// choices (female responses)
 function choose(option) {
 
     document.getElementById("choices").style.display = "none";
@@ -216,20 +217,25 @@ function choose(option) {
     });
 
     if (option === "forgive") {
-        addMessage("It's okay… I understand 🙂", "right");
-        addMessage("Let’s not think about it anymore 💛", "right");
-        addMessage("We’re good 😊", "right");
+        addMessage("I was a little hurt…", "left");
+        addMessage("But I know you didn’t mean it.", "left");
+        addMessage("And I don’t want to lose this either 💛", "left");
+        addMessage("We’re okay 🙂", "left");
     }
 
     else if (option === "time") {
-        addMessage("I saw your message…", "right");
-        addMessage("I just need a little time.", "right");
+        addMessage("I read everything…", "left");
+        addMessage("I just need a little time to process.", "left");
+        addMessage("It’s not that I don’t care.", "left");
+        addMessage("I just don’t want to rush my feelings.", "left");
     }
 
     else if (option === "honest") {
-        addMessage("I was hurt…", "right");
-        addMessage("But I appreciate you saying sorry.", "right");
-        addMessage("Let’s take it slow.", "right");
+        addMessage("I’ll be honest… it did hurt.", "left");
+        addMessage("Not because of what happened,", "left");
+        addMessage("but because it came from you.", "left");
+        addMessage("I care about us… that’s why it matters.", "left");
+        addMessage("Let’s take it slow and fix this properly.", "left");
     }
 }
 </script>
